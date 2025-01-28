@@ -1,0 +1,32 @@
+{
+    "contributor-id" "5ca58a6a-aa46-4e5a-a2e1-b3fc6bc2efa6" 
+    "description" "A dropout uncertainty neural network (DUNN) potential model driver, which supports running in both fully-connected mode and dropout mode. The DUNN can be used easily to quantify the uncertainty in atomistic simulations and determine the transferability of potential." 
+    "developer" [
+        "5ca58a6a-aa46-4e5a-a2e1-b3fc6bc2efa6" 
+        "360c0aed-48ce-45f6-ba13-337f12a531e8"
+    ] 
+    "doi" "10.25950/9573ca43" 
+    "domain" "openkim.org" 
+    "executables" [
+        "CreateDispatch.sh"
+    ] 
+    "extended-id" "DUNN__MD_292677547454_000" 
+    "kim-api-version" "2.0" 
+    "maintainer-id" "5ca58a6a-aa46-4e5a-a2e1-b3fc6bc2efa6" 
+    "publication-year" "2019" 
+    "source-citations" [
+        {
+            "author" "Wen, Mingjian and Tadmor, Ellad B." 
+            "doi" "10.1038/s41524-020-00390-8" 
+            "issn" "2057-3960" 
+            "issue" "1" 
+            "journal" "npj Computational Materials" 
+            "recordkey" "MD_292677547454_000a" 
+            "recordtype" "article" 
+            "title" "Uncertainty quantification in molecular simulations with dropout neural network potentials" 
+            "volume" "6" 
+            "year" "2020"
+        }
+    ] 
+    "title" "A dropout uncertainty neural network (DUNN) model driver v000"
+}
