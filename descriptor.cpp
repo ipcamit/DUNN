@@ -590,7 +590,6 @@ void Descriptor::generate_one_atom(int const i,
     }  // loop over descriptors
 
     // three-body descriptors
-    continue;
     if (has_three_body_ == false) continue;
 
     for (int kk = jj + 1; kk < numnei; ++kk)
