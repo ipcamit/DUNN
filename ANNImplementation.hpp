@@ -264,9 +264,6 @@ int ANNImplementation::Compute(
   // only for proecessdEdr and not for normal forces.
   bool need_dEdr = isComputeProcess_dEdr;
 
-  if (need_dEdr)
-    std::cout << "=============Processing dEdr = True==============\n";
-
   bool need_dE = ((isComputeForces == true) || (isComputeVirial == true)
                   || (isComputeParticleVirial == true));
 
@@ -326,7 +323,7 @@ int ANNImplementation::Compute(
     double *** dGCdr_ij = nullptr;
     int const Ndescriptors = descriptor_->get_num_descriptors();
     AllocateAndInitialize1DArray<double>(GC, Ndescriptors);
-    if (need_dE)
+    if (need_dE || need_dEdr)
     {
       AllocateAndInitialize2DArray<double>(
           dGCdr, Ndescriptors, (numnei + 1) * DIM);
@@ -344,7 +341,6 @@ int ANNImplementation::Compute(
         need_dE,
         dGCdr_ij[0][0],
         need_dEdr);
-
     // centering and normalization
     if (descriptor_->need_normalize())
     {
@@ -368,7 +364,6 @@ int ANNImplementation::Compute(
         }
       }
     }
-
     double E = 0;
     double * dEdGC = nullptr;
 
@@ -382,11 +377,12 @@ int ANNImplementation::Compute(
 
       // NN forward
       network_->forward(GC, 1, Ndescriptors, ensemble_index);
+
       E = network_->get_sum_output();
 
       // NN backprop
       if (need_dE || need_dEdr)
-      {
+      { 
         network_->backward();
         dEdGC = network_->get_grad_input();
       }
@@ -448,7 +444,6 @@ int ANNImplementation::Compute(
       LOG_ERROR(message);
       return ier;
     }
-
     // Contribution to energy
     if (isComputeEnergy == true) { *energy += energyScale_ * E; }
 
@@ -516,9 +511,11 @@ int ANNImplementation::Compute(
             {
               if (idx != i)
               {
-                double tmpdEdr = dGCdr_ij[j][i][k] * dEdGC[j];
-                dEdr[i][idx] += tmpdEdr;
-                dEdr[idx][i] += tmpdEdr;
+                for (int l =0 ; l < k ;l++){
+                    double tmpdEdr = dGCdr_ij[j][k][l] * dEdGC[j];
+                    dEdr[i][idx] += tmpdEdr;
+                    dEdr[idx][i] += tmpdEdr;
+                }
               }
             }
           }
@@ -533,7 +530,7 @@ int ANNImplementation::Compute(
     {
       Deallocate1DArray(dEdGC);
     }
-    if (need_dEdr) { Deallocate2DArray(dGCdr_ij); }
+    if (need_dEdr) { if (dGCdr_ij)  Deallocate3DArray(dGCdr_ij); }
 
   }  // loop over i
 

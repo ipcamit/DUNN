@@ -43,6 +43,8 @@ endif()
 
 # End preamble
 
+add_compile_options(-g)
+
 # Extract Eigen library
 execute_process(COMMAND tar xJf ${PROJECT_SOURCE_DIR}/eigen-v3.3.7.tar.xz -C ${CMAKE_CURRENT_BINARY_DIR})
 set(CMAKE_CXX_STANDARD 11) # Eigen requires C++11
