@@ -71,13 +71,13 @@ void AllocateAndInitialize2DArray(T **& arrayPtr,
   std::uint64_t x = extentZero;
   std::uint64_t y = extentOne;
   arrayPtr[0] = new T[x  * y];
-  for (int i = 1; i < x; ++i)
+  for (unsigned int i = 1; i < x; ++i)
   { arrayPtr[i] = arrayPtr[i - 1] + y; }
 
   // initialize
-  for (int i = 0; i < x; ++i)
+  for (unsigned int i = 0; i < x; ++i)
   {
-    for (int j = 0; j < y; ++j) { arrayPtr[i][j] = 0.0; }
+    for (unsigned int j = 0; j < y; ++j) { arrayPtr[i][j] = 0.0; }
   }
 }
 
@@ -108,24 +108,24 @@ void AllocateAndInitialize3DArray(T ***& arrayPtr,
   arrayPtr[0] = new T *[x * y];
   arrayPtr[0][0] = new T[x * y * z];
 
-  for (int i = 1; i < x; ++i)
+  for (unsigned int i = 1; i < x; ++i)
   {
     arrayPtr[i] = arrayPtr[i - 1] + y;
     arrayPtr[i][0] = arrayPtr[i - 1][0] + y * z;
   }
 
-  for (int i = 0; i < x; ++i)
+  for (unsigned int i = 0; i < x; ++i)
   {
-    for (int j = 1; j < y; ++j)
+    for (unsigned int j = 1; j < y; ++j)
     { arrayPtr[i][j] = arrayPtr[i][j - 1] + z; }
   }
 
   // initialize
-  for (int i = 0; i < x; ++i)
+  for (unsigned int i = 0; i < x; ++i)
   {
-    for (int j = 0; j < y; ++j)
+    for (unsigned int j = 0; j < y; ++j)
     {
-      for (int k = 0; k < z; ++k) { arrayPtr[i][j][k] = 0.0; }
+      for (unsigned int k = 0; k < z; ++k) { arrayPtr[i][j][k] = 0.0; }
     }
   }
 }
