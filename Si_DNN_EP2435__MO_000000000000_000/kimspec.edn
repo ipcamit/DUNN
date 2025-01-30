@@ -1,0 +1,26 @@
+{"contributor-id" "729049db-685a-43b1-97a8-617daa2586ba"
+ "description" "A general purpose Si pot"
+ "developer" "729049db-685a-43b1-97a8-617daa2586ba"
+ "doi" "10.25950/d7a965ba"
+ "domain" "openkim.org"
+ "executables" []
+ "extended-id" "Si_DNN_EP2435__MO_000000000000_000"
+ "kim-api-version" "2.3"
+ "maintainer-id" "729049db-685a-43b1-97a8-617daa2586ba"
+ "model-driver" "DUNN__MD_292677547454_000"
+ "potential-type" "dunn"
+ "publication-year" "2024"
+ "source-citations" [{"author" "Bart{\\'o}k, Albert P and Kermode, James and Bernstein, Noam and Cs{\\'a}nyi, G{\\'a}bor"
+                      "doi" "10.1103/PhysRevX.8.041048"
+                      "issue" "4"
+                      "journal" "Physical Review X"
+                      "pages" "041048"
+                      "publisher" "American Physical Society"
+                      "recordkey" "MO_196181738937_000a"
+                      "recordtype" "article"
+                      "title" "Machine learning a general-purpose interatomic potential for silicon"
+                      "volume" "8"
+                      "year" "2018"}]
+ "species" ["Si"]
+ "title" "Si potential developed by Gupta et al. (2024) v000"}
+
