@@ -262,7 +262,8 @@ int ANNImplementation::Compute(
 
   // keeping it separate from need_dE, as the gradients for r need to accumulated
   // only for proecessdEdr and not for normal forces.
-  bool need_dEdr = isComputeProcess_dEdr;
+  // bool need_dEdr = isComputeProcess_dEdr;
+  bool need_dEdr = true;
 
   bool need_dE = ((isComputeForces == true) || (isComputeVirial == true)
                   || (isComputeParticleVirial == true));
@@ -342,6 +343,22 @@ int ANNImplementation::Compute(
         dGCdr_ij[0][0],
         need_dEdr);
     // centering and normalization
+    // for(int d = 0; d < Ndescriptors; d++){
+    //   std::cout << GC[d] << " ";
+    // }
+    // std::cout << "\n";
+    //
+    //   for (int ii = 0; ii < numnei; ii++)
+    //   {
+    //     for (int jj = 0; jj < numnei; jj++)
+    //     {
+    //       std::cout << dGCdr_ij[49][ii][jj] << "  ";
+    //     }
+    //     std::cout << "\n";
+    //   }
+    //   std::cout << "\n-------\n";
+    // }
+    // exit(0);
     if (descriptor_->need_normalize())
     {
       for (int j = 0; j < Ndescriptors; j++)
@@ -479,7 +496,23 @@ int ANNImplementation::Compute(
             forces[idx][1] += energyScale_ * f[1];
             forces[idx][2] += energyScale_ * f[2];
           }
-
+          // if (isComputeProcess_dEdr == true)
+          if (true)
+          {
+            // std::cout << "here !! \n";
+            if (idx != i)
+            {
+              for (int l =0 ; l <=k ; l++){
+                {
+                  double tmpdEdr = dGCdr_ij[j][k][l] * dEdGC[j];
+                  // std:: cout << tmpdEdr << " ";
+                  dEdr[i][idx] += tmpdEdr;
+                  dEdr[idx][i] += tmpdEdr;
+                }
+              }
+              // std::cout << std::endl;
+            }
+          }
           if (isComputeParticleVirial == true || isComputeVirial == true)
           {
             VectorOfSizeSix v;
@@ -507,17 +540,6 @@ int ANNImplementation::Compute(
               virial[4] += v[4];
               virial[5] += v[5];
             }
-            if (isComputeProcess_dEdr == true)
-            {
-              if (idx != i)
-              {
-                for (int l =0 ; l < k ;l++){
-                    double tmpdEdr = dGCdr_ij[j][k][l] * dEdGC[j];
-                    dEdr[i][idx] += tmpdEdr;
-                    dEdr[idx][i] += tmpdEdr;
-                }
-              }
-            }
           }
         }
       }
@@ -534,6 +556,12 @@ int ANNImplementation::Compute(
 
   }  // loop over i
 
+  // Save all forces
+  std::ofstream f_i("f_i.txt",std::ios::out);
+  for (int i = 0; i < Nparticles; i++){
+    f_i << forces[i][0] << '\t' << forces[i][1] << '\t'  << forces[i][2] << "\n";
+  }
+  f_i.close();
   // Call to process dEdr now that dEdr has been accumulated
   if (need_dEdr)
   {
@@ -547,12 +575,35 @@ int ANNImplementation::Compute(
                coordinates[jj][2] - coordinates[ii][2]};
         const double r_ij
             = std::sqrt(r_i[0] * r_i[0] + r_i[1] * r_i[1] + r_i[2] * r_i[2]);
-        modelComputeArguments->ProcessDEDrTerm(
-            dEdr[ii][jj] * energyScale_, r_ij, r_i.data(), ii, jj);
+        // modelComputeArguments->ProcessDEDrTerm(
+        //     dEdr[ii][jj] * energyScale_, r_ij, r_i.data(), ii, jj);
       }
     }
   }
+  std::cout << "Reached here\n";
+  std::ofstream f_ij("f_ij.txt", std::ios::out);
+  for(int i = 0; i < Nparticles; i++){
+    std::array<double, 3> summed_forces = {0.0, 0.0, 0.0};
+    for(int j = 0; j < Nparticles; j++){
+      if (i != j)
+      {
+        const std::array<double, 3> r_i
+            = {coordinates[j][0] - coordinates[i][0],
+               coordinates[j][1] - coordinates[i][1],
+               coordinates[j][2] - coordinates[i][2]};
+        const double r_ij
+            = std::sqrt(r_i[0] * r_i[0] + r_i[1] * r_i[1] + r_i[2] * r_i[2]);
+        // if (dEdr[i][j] > 0)
+        //   std::cout << dEdr[i][j] << " " << energyScale_ << " " << r_i[0] << " " << r_ij <<"\n";
+        summed_forces[0] += dEdr[i][j] * energyScale_ * r_i[0] / r_ij;
+        summed_forces[1] += dEdr[i][j] * energyScale_ * r_i[1] / r_ij;
+        summed_forces[2] += dEdr[i][j] * energyScale_ * r_i[2] / r_ij;
+      }
+    }
 
+    f_ij << summed_forces[0] << '\t' << summed_forces[1] << '\t' << summed_forces[2] << '\n';
+  }
+  f_ij.close();
 
   if (need_dEdr) { Deallocate2DArray(dEdr); }
 

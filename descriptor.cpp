@@ -580,7 +580,7 @@ void Descriptor::generate_one_atom(int const i,
         if (grad_dr)
         {
           int page = idx * numnei * numnei;
-          grad_dr_desc[page + numnei + jj] += dgcdr_two;
+          grad_dr_desc[page + jj] += dgcdr_two;
           grad_dr_desc[page + jj * numnei] += dgcdr_two;
         }
 
@@ -590,6 +590,7 @@ void Descriptor::generate_one_atom(int const i,
     }  // loop over descriptors
 
     // three-body descriptors
+    continue;
     if (has_three_body_ == false) continue;
 
     for (int kk = jj + 1; kk < numnei; ++kk)
@@ -671,12 +672,12 @@ void Descriptor::generate_one_atom(int const i,
           }
           if (grad_dr){
               int page = idx * numnei * numnei;
-              grad_dr_desc[page + numnei + jj] = dgcdr_three[0];
-              grad_dr_desc[page + numnei + kk] = dgcdr_three[1];
-              grad_dr_desc[page + jj * numnei + kk] = dgcdr_three[2];
-              grad_dr_desc[page + jj * numnei] = dgcdr_three[0];
-              grad_dr_desc[page + kk * numnei] = dgcdr_three[1];
-              grad_dr_desc[page + kk * numnei + jj] = dgcdr_three[2];
+              grad_dr_desc[page + jj] += dgcdr_three[0]; //ij
+              grad_dr_desc[page + kk] += dgcdr_three[1]; //ik
+              grad_dr_desc[page + jj * numnei + kk] += dgcdr_three[2]; //jk
+              grad_dr_desc[page + jj * numnei] += dgcdr_three[0]; // ji
+              grad_dr_desc[page + kk * numnei] += dgcdr_three[1]; // ki
+              grad_dr_desc[page + kk * numnei + jj] += dgcdr_three[2]; // kj
 
           }
           idx += 1;

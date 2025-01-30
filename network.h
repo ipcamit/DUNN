@@ -66,7 +66,7 @@ class NeuralNetwork
 
   inline double * get_output() { return activOutputLayer_.data(); }
 
-  inline double * get_grad_input() { std::cout << gradInput_.size() << "<<<<\n";return gradInput_.data(); }
+  inline double * get_grad_input() {return gradInput_.data(); }
 
   void set_ensemble_size(int repeat);
   inline int get_ensemble_size() { return ensemble_size_; };
